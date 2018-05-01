@@ -6,9 +6,9 @@
   "nativescript": {},
   "scripts": {
     "build": "npm i && tsc",
-    "demo.android": "npm run preparedemo && cd demo-angular && tns run android",
-    "preparedemo": "npm run build && cd demo-angular && tns plugin remove nativescript-oauth && tns plugin add .. && tns install",
-    "setup": "cd demo-angular && npm install && cd .. && npm run build && cd demo-angular && tns plugin add .. && cd .."
+    "demo.android": "npm run preparedemo && cd ../demo-angular && tns run android",
+    "preparedemo": "npm run build && cd ../demo-angular && tns plugin remove nativescript-oauth && tns plugin add ../src && tns install",
+    "setup": "cd ../demo-angular && npm install && cd ../src && npm run build && cd ../demo-angular && tns plugin add ../src && cd ../src"
   },
   "repository": {
     "type": "git",

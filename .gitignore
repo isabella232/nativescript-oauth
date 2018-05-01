@@ -5,4 +5,4 @@ demo*/app/*.js
 demo*/*.d.ts
 demo*/platforms
 demo*/node_modules
-node_modules
+src/node_modules

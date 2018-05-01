@@ -12,6 +12,7 @@ import { AuthHelperLinkedIn } from './auth-helper-linkedin';
 import { AuthHelperSalesforce } from './auth-helper-salesforce';
 
 import * as TnsOAuth from './tns-oauth-interfaces';
+export * from './tns-oauth-interfaces';
 
 export var instance: TnsOAuth.ITnsAuthHelper = null;
 
@@ -168,5 +169,3 @@ export function ensureValidToken(): Promise<string> {
     });
 
 }
-
-
