@@ -9,14 +9,23 @@ import * as dialogs from 'ui/dialogs';
 export class AppComponent {
 
     public onTapLogin() {
-        tnsOAuthModule.ensureValidToken()
-            .then((token: string) => {
-                console.log('Token: ' + token);
+        tnsOAuthModule.loginAuthCode()
+            .then(() => {
+                console.log("AuthCode: " + tnsOAuthModule.authCode());
             })
             .catch((er) => {
                 console.error('error logging in');
                 console.dir(er);
             });
+
+        // tnsOAuthModule.ensureValidToken()
+        //     .then((token: string) => {
+        //         console.log('Token: ' + token);
+        //     })
+        //     .catch((er) => {
+        //         console.error('error logging in');
+        //         console.dir(er);
+        //     });
     }
 
     public onTapLogout() {

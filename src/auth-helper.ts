@@ -6,9 +6,23 @@ import * as TnsOAuth from './tns-oauth-interfaces';
 export class AuthHelper {
     public credentials: TnsOAuth.ITnsOAuthCredentials;
     public tokenResult: TnsOAuth.ITnsOAuthTokenResult;
+    public authCodeResult: TnsOAuth.ITnsOAuthCodeResult;
 
     constructor() {
         this.tokenResult = tnsOauth.getTokenFromCache();
+    }
+
+    public loginAuthCode(successPage?: string): Promise<string> {
+        return new Promise((resolve, reject) => {
+            tnsOauth.loginToGetAuthCode(this.credentials, successPage)
+                .then((response: TnsOAuth.ITnsOAuthCodeResult) => {
+                    this.authCodeResult = response;
+                    resolve(response.authCode);
+                })
+                .catch((er) => {
+                    reject(er);
+                });
+        });
     }
 
     public login(successPage?: string): Promise<string> {

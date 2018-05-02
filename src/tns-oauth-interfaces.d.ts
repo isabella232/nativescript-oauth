@@ -4,6 +4,8 @@
 export interface ITnsAuthHelper {
     credentials: ITnsOAuthCredentials;
     tokenResult: ITnsOAuthTokenResult;
+    authCodeResult: ITnsOAuthCodeResult;
+    loginAuthCode: (successPage?: string) => Promise<string>;
     login: (successPage?: string) => Promise<string>;
     logout: (successPage?: string) => Promise<void>;
     refreshToken: () => Promise<string>;
@@ -35,6 +37,10 @@ export interface ITnsOAuthTokenResult {
     refreshTokenExpiration: Date;
 }
 
+export interface ITnsOAuthCodeResult {
+    authCode: string;
+}
+
 export interface ITnsOAuthOptions {
     clientId: string;
     scope: string[];
@@ -61,6 +67,9 @@ export interface ITnsOAuthOptionsUaa extends ITnsOAuthOptions {
 export interface ITnsOAuthOptionsLinkedIn extends ITnsOAuthOptions {
     clientSecret: string;
     redirectUri: string;
+}
+
+export interface ITnsOAuthOptionsGitHub extends ITnsOAuthOptions {
 }
 
 export interface ITnsOAuthOptionsSalesforce extends ITnsOAuthOptions {

@@ -9,6 +9,7 @@ import { AuthHelperFacebook } from './auth-helper-facebook';
 import { AuthHelperGoogle } from './auth-helper-google';
 import { AuthHelperUaa } from './auth-helper-uaa';
 import { AuthHelperLinkedIn } from './auth-helper-linkedin';
+import { AuthHelperGitHub } from './auth-helper-github';
 import { AuthHelperSalesforce } from './auth-helper-salesforce';
 
 import * as TnsOAuth from './tns-oauth-interfaces';
@@ -103,6 +104,23 @@ export function initLinkedIn(options: TnsOAuth.ITnsOAuthOptionsLinkedIn): Promis
     });
 }
 
+export function initGitHub(options: TnsOAuth.ITnsOAuthOptionsGitHub): Promise<any> {
+    return new Promise(function (resolve, reject) {
+        try {
+            if (instance !== null) {
+                reject("You already ran init");
+                return;
+            }
+
+            instance = new AuthHelperGitHub(options.clientId, options.scope);
+            resolve(instance);
+        } catch (ex) {
+            console.log("Error in AuthHelperGitHub.init: " + ex);
+            reject(ex);
+        }
+    });
+}
+
 export function initSalesforce(options: TnsOAuth.ITnsOAuthOptionsSalesforce): Promise<any> {
     return new Promise(function (resolve, reject) {
         try {
@@ -131,6 +149,14 @@ export function initSalesforce(options: TnsOAuth.ITnsOAuthOptionsSalesforce): Pr
 
 export function accessToken(): string {
     return instance.tokenResult.accessToken;
+}
+
+export function authCode(): string {
+    return instance.authCodeResult.authCode;
+}
+
+export function loginAuthCode(successPage?: string): Promise<string> {
+    return instance.loginAuthCode(successPage);
 }
 
 export function login(successPage?: string): Promise<string> {

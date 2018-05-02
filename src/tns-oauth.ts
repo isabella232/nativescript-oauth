@@ -101,6 +101,85 @@ export function getTokenFromCache() {
     return TnsOAuthTokenCache.getToken();
 }
 
+export function loginToGetAuthCode(credentials: TnsOAuthModule.ITnsOAuthCredentials, successPage?: string): Promise<TnsOAuthModule.ITnsOAuthCodeResult> {
+    return new Promise((resolve, reject) => {
+        var navCount = 0;
+
+        let hasCode = false;
+
+        let checkCodeIntercept = (webView, error, url): boolean => {
+            var retStr = '';
+            try {
+                if (error && error.userInfo && error.userInfo.allValues && error.userInfo.allValues.count > 0) {
+                    let val0 = error.userInfo.allValues[0];
+                    if (val0.absoluteString) {
+                        retStr = error.userInfo.allValues[0].absoluteString;
+                    } else if (val0.userInfo && val0.userInfo.allValues && val0.userInfo.allValues.count > 0) {
+                        retStr = val0.userInfo.allValues[0];
+                    } else {
+                        retStr = val0;
+                    }
+                    //} else if (webView.request && webView.request.URL && webView.request.URL.absoluteString) {
+                } else if (webView && webView.URL && webView.URL.absoluteString) {
+                    retStr = webView.URL.absoluteString;
+                } else if (url) {
+                    retStr = url;
+                }
+            }
+            catch (ex) {
+                reject('Failed to resolve return URL');
+            }
+
+            if (retStr != '') {
+                let parsedRetStr = URL.parse(retStr);
+                if (parsedRetStr.query) {
+                    let qsObj = querystring.parse(parsedRetStr.query);
+
+                    let codeStr = qsObj['code'] ? qsObj['code'] : qsObj['xsrfsign'];
+                    let errSubCode = qsObj['error_subcode'];
+                    if (codeStr && !hasCode) {
+                        hasCode = true;
+                        try {
+                            let authCodeResult: TnsOAuthModule.ITnsOAuthCodeResult = {
+                                authCode: codeStr
+                            };
+
+                            if (successPage && navCount === 0) {
+                                let navEntry: frameModule.NavigationEntry = {
+                                    moduleName: successPage,
+                                    clearHistory: true
+                                };
+                                frameModule.topmost().navigate(navEntry);
+                            } else {
+                                frameModule.topmost().goBack();
+                            }
+                            navCount++;
+                            resolve(authCodeResult);
+
+                        } catch (er) {
+                            console.error('AuthCode error occurred...');
+                            console.dir(er);
+                            reject(er);
+                        }
+                        return true;
+                    } else {
+                        if (errSubCode) {
+                            if (errSubCode == 'cancel') {
+                                frameModule.topmost().goBack();
+                            }
+                        }
+                    }
+                }
+            }
+            return false;
+        };
+
+        console.log('LOGIN PAGE URL = ' + getAuthUrl(credentials));
+        let authPage = new TnsOAuthPageProvider(checkCodeIntercept, getAuthUrl(credentials));
+        frameModule.topmost().navigate(() => { return authPage.loginPageFunc() });
+    });
+}
+
 export function loginViaAuthorizationCodeFlow(credentials: TnsOAuthModule.ITnsOAuthCredentials, successPage?: string): Promise<TnsOAuthModule.ITnsOAuthTokenResult> {
     return new Promise((resolve, reject) => {
         var navCount = 0;
@@ -134,6 +213,7 @@ export function loginViaAuthorizationCodeFlow(credentials: TnsOAuthModule.ITnsOA
                 let parsedRetStr = URL.parse(retStr);
                 if (parsedRetStr.query) {
                     let qsObj = querystring.parse(parsedRetStr.query);
+
                     let codeStr = qsObj['code'] ? qsObj['code'] : qsObj['xsrfsign'];
                     let errSubCode = qsObj['error_subcode'];
                     if (codeStr && !hasCode) {
@@ -341,6 +421,9 @@ class TnsOAuth {
                         // being thrown
                         results = querystring.parse(response.content.toString());
                     }
+
+                    console.log("results: " + JSON.stringify(results));
+
                     let access_token = results["access_token"];
                     let refresh_token = results["refresh_token"];
                     let expires_in = results["expires_in"];
