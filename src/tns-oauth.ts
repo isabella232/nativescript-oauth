@@ -11,6 +11,7 @@ import * as utils from './tns-oauth-utils';
 import { TnsOAuthPageProvider } from './tns-oauth-page-provider';
 import { TnsOAuthTokenCache } from './tns-oauth-token-cache';
 import * as TnsOAuthModule from './tns-oauth-interfaces';
+import * as tnsOAuthModule from './index';
 
 export var ACCESS_TOKEN_CACHE_KEY = 'ACCESS_TOKEN_CACHE_KEY';
 export var REFRESH_TOKEN_CACHE_KEY = 'REFRESH_TOKEN_CACHE_KEY';
@@ -101,11 +102,12 @@ export function getTokenFromCache() {
     return TnsOAuthTokenCache.getToken();
 }
 
-export function loginToGetAuthCode(credentials: TnsOAuthModule.ITnsOAuthCredentials, successPage?: string): Promise<TnsOAuthModule.ITnsOAuthCodeResult> {
+export function loginToGetAuthCode(credentials: TnsOAuthModule.ITnsOAuthCredentials, callbackHost?:string, successPage?: string): Promise<TnsOAuthModule.ITnsOAuthCodeResult> {
     return new Promise((resolve, reject) => {
         var navCount = 0;
 
         let hasCode = false;
+        let hasMatchedHost = false;
 
         let checkCodeIntercept = (webView, error, url): boolean => {
             var retStr = '';
@@ -132,6 +134,13 @@ export function loginToGetAuthCode(credentials: TnsOAuthModule.ITnsOAuthCredenti
 
             if (retStr != '') {
                 let parsedRetStr = URL.parse(retStr);
+
+                console.log("loginToGetAuthCode: " + JSON.stringify(parsedRetStr));
+                if(platform.isAndroid)
+                {
+                    android.util.Log.i("[nativescript-oauth]", JSON.stringify(parsedRetStr));
+                }
+
                 if (parsedRetStr.query) {
                     let qsObj = querystring.parse(parsedRetStr.query);
 
@@ -168,6 +177,17 @@ export function loginToGetAuthCode(credentials: TnsOAuthModule.ITnsOAuthCredenti
                                 frameModule.topmost().goBack();
                             }
                         }
+                    }
+                }
+                else if(parsedRetStr.host === callbackHost && !hasMatchedHost) {
+                    hasMatchedHost = true;
+                    frameModule.topmost().goBack();
+                    tnsOAuthModule.loginAuthCode();
+
+                    console.log("loginToGetAuthCode: callbackHost matched");
+                    if(platform.isAndroid)
+                    {
+                        android.util.Log.i("[nativescript-oauth]", "callbackHost matched");
                     }
                 }
             }

@@ -12,9 +12,9 @@ export class AuthHelper {
         this.tokenResult = tnsOauth.getTokenFromCache();
     }
 
-    public loginAuthCode(successPage?: string): Promise<string> {
+    public loginAuthCode(callbackHost?:string, successPage?: string): Promise<string> {
         return new Promise((resolve, reject) => {
-            tnsOauth.loginToGetAuthCode(this.credentials, successPage)
+            tnsOauth.loginToGetAuthCode(this.credentials, callbackHost, successPage)
                 .then((response: TnsOAuth.ITnsOAuthCodeResult) => {
                     this.authCodeResult = response;
                     resolve(response.authCode);

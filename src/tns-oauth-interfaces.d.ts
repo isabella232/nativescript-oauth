@@ -5,7 +5,7 @@ export interface ITnsAuthHelper {
     credentials: ITnsOAuthCredentials;
     tokenResult: ITnsOAuthTokenResult;
     authCodeResult: ITnsOAuthCodeResult;
-    loginAuthCode: (successPage?: string) => Promise<string>;
+    loginAuthCode: (callbackHost?:string, successPage?: string) => Promise<string>;
     login: (successPage?: string) => Promise<string>;
     logout: (successPage?: string) => Promise<void>;
     refreshToken: () => Promise<string>;

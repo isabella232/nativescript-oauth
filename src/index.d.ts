@@ -13,7 +13,7 @@ export declare function initSalesforce(options: TnsOAuth.ITnsOAuthOptionsSalesfo
 
 export declare function accessToken(): string;
 export declare function authCode(): string;
-export declare function loginAuthCode(successPage?: string): Promise<string>;
+export declare function loginAuthCode(callbackHost?:string, successPage?: string): Promise<string>;
 export declare function login(successPage?: string): Promise<string>;
 export declare function logout(successPage?: string): Promise<void>;
 export declare function accessTokenExpired(): boolean;

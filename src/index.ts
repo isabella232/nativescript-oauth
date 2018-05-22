@@ -155,8 +155,8 @@ export function authCode(): string {
     return instance.authCodeResult.authCode;
 }
 
-export function loginAuthCode(successPage?: string): Promise<string> {
-    return instance.loginAuthCode(successPage);
+export function loginAuthCode(callbackHost?:string, successPage?: string): Promise<string> {
+    return instance.loginAuthCode(callbackHost, successPage);
 }
 
 export function login(successPage?: string): Promise<string> {
