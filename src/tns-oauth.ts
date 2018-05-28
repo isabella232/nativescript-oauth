@@ -135,12 +135,6 @@ export function loginToGetAuthCode(credentials: TnsOAuthModule.ITnsOAuthCredenti
             if (retStr != '') {
                 let parsedRetStr = URL.parse(retStr);
 
-                console.log("loginToGetAuthCode: " + JSON.stringify(parsedRetStr));
-                if(platform.isAndroid)
-                {
-                    android.util.Log.i("[nativescript-oauth]", JSON.stringify(parsedRetStr));
-                }
-
                 if (parsedRetStr.query) {
                     let qsObj = querystring.parse(parsedRetStr.query);
 
