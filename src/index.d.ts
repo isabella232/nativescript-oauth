@@ -10,6 +10,7 @@ export declare function initUaa(options: TnsOAuth.ITnsOAuthOptionsUaa): Promise<
 export declare function initLinkedIn(options: TnsOAuth.ITnsOAuthOptionsLinkedIn): Promise<any>;
 export declare function initGitHub(options: TnsOAuth.ITnsOAuthOptionsGitHub): Promise<any>;
 export declare function initSalesforce(options: TnsOAuth.ITnsOAuthOptionsSalesforce): Promise<any>;
+export declare function initCustom(options: TnsOAuth.ITnsOAuthOptionsCustom): Promise<any>;
 
 export declare function accessToken(): string;
 export declare function authCode(): string;

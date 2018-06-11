@@ -77,3 +77,8 @@ export interface ITnsOAuthOptionsSalesforce extends ITnsOAuthOptions {
     redirectUri: string;
     responseType: string;
 }
+
+export interface ITnsOAuthOptionsCustom {
+    credentials: ITnsOAuthCredentials;
+    cookieDomains: Array<string>;
+}
